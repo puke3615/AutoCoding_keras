@@ -1,8 +1,9 @@
 import numpy as np
 
-a = np.zeros([3, 4])
 
-a = np.expand_dims(a, -1)
+print np.random.multinomial(1000, [1./6] * 6 , 1)
 
-print a.shape
-print np.divide([1, 2], 1.)
+a = np.array([1, 2])
+b = np.log(a) / 1.2
+print b
+print np.exp(b)
