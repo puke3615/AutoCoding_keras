@@ -34,12 +34,12 @@ def build_model(input_maxlen, in_depth, out_size, out_depth, hidden_size):
 if __name__ == '__main__':
     n_hidden = 128
     path_weights = 'weights.h5'
-    in_steps = 10
+    in_steps = 1
     in_depth = in_steps
     batch_size = 32
     lr = 1e-2
 
-    generator = md5_data.data_generator()
+    generator = md5_data.data_generator(in_steps, in_depth, batch_size)
 
     model = build_model(in_steps, in_depth, md5_data.out_size, md5_data.out_depth, n_hidden)
     model.compile(Nadam(lr), 'categorical_crossentropy', metrics=['accuracy'])
