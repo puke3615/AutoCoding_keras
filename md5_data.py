@@ -9,7 +9,7 @@ def md5_generator(length=10, depth=10, batch_size=32):
         for _ in range(batch_size):
             random_data = [str(c) for c in np.random.randint(0, depth, length).tolist()]
             x = ''.join(random_data)
-            md5.update(''.join(random_data))
+            md5.update(''.join(random_data).encode('utf-8'))
             y = ''.join(md5.hexdigest())
             xs.append(x)
             ys.append(y)
@@ -36,7 +36,7 @@ def vectorize_stories(input_list, tar_list, word_idx, input_maxlen, tar_maxlen, 
 def data_generator(in_steps=10, in_depth=10, batch_size=32):
     m_generator = md5_generator(length=in_steps, depth=in_depth, batch_size=batch_size)
     while True:
-        X, Y = m_generator.next()
+        X, Y = next(m_generator)
         size = len(X)
         xs = np.zeros([size, in_steps, in_depth])
         ys = np.zeros([size, out_size, out_depth])
@@ -62,10 +62,10 @@ if __name__ == '__main__':
     m_generator = md5_generator(length=in_steps, depth=in_depth, batch_size=batch_size)
     generator = data_generator()
     for i, (x, y) in enumerate(m_generator):
-        print x, ' => ', y
+        print(x, ' => ', y)
         if i > 1:
             break
     for i, (x, y) in enumerate(generator):
-        print x, ' => ', y
+        print(x, ' => ', y)
         if i > 1:
             break

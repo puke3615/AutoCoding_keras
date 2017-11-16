@@ -35,7 +35,7 @@ if __name__ == '__main__':
     n_hidden = 128
     path_weights = 'weights.h5'
     in_steps = 10
-    in_depth = 10
+    in_depth = in_steps
     batch_size = 32
     lr = 1e-2
 
@@ -47,6 +47,6 @@ if __name__ == '__main__':
     if os.path.exists(path_weights):
         model.load_weights(path_weights)
         print('Load weights successfully.')
-    model.fit_generator(generator, steps_per_epoch=100, epochs=500, verbose=1,
-                        callbacks=[ModelCheckpoint(path_weights)])
+    model.fit_generator(generator, steps_per_epoch=200, epochs=1000, verbose=1,
+                        callbacks=[ModelCheckpoint(path_weights), TensorBoard()])
     model.save_weights(path_weights)
