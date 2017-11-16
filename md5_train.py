@@ -33,7 +33,7 @@ def build_model(input_maxlen, in_depth, out_size, out_depth, hidden_size):
 
 if __name__ == '__main__':
     n_hidden = 128
-    path_weights = 'weights.h5'
+    path_weights = './params/weights.h5'
     in_steps = 1
     in_depth = in_steps
     batch_size = 32
