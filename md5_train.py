@@ -36,7 +36,7 @@ if __name__ == '__main__':
     path_weights = './params/weights.h5'
     in_steps = 1
     in_depth = in_steps
-    batch_size = 32
+    batch_size = 1
     lr = 1e-2
 
     generator = md5_data.data_generator(in_steps, in_depth, batch_size)

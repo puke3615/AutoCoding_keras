@@ -1,16 +1,20 @@
 import numpy as np
 import hashlib
 
+def get_md5(content):
+    md5 = hashlib.md5()
+    content = content.encode('utf-8')
+    md5.update(content)
+    return md5.hexdigest()
+
 
 def md5_generator(length=10, depth=10, batch_size=32):
-    md5 = hashlib.md5()
     while True:
         xs, ys = [], []
         for _ in range(batch_size):
             random_data = [str(c) for c in np.random.randint(0, depth, length).tolist()]
             x = ''.join(random_data)
-            md5.update(''.join(random_data).encode('utf-8'))
-            y = ''.join(md5.hexdigest())
+            y = ''.join(get_md5(''.join(random_data)))
             xs.append(x)
             ys.append(y)
         yield xs, ys
@@ -41,31 +45,34 @@ def data_generator(in_steps=10, in_depth=10, batch_size=32):
         xs = np.zeros([size, in_steps, in_depth])
         ys = np.zeros([size, out_size, out_depth])
         for i, (x, y) in enumerate(zip(X, Y)):
-            for j, x_j in enumerate(x):
-                xs[i, j, char2id[x_j]] = 1
-            for q, y_q in enumerate(y):
-                ys[i, q, char2id[y_q]] = 1
+            try:
+                for j, x_j in enumerate(x):
+                    xs[i, j, char2id[x_j]] = 1
+                for q, y_q in enumerate(y):
+                    ys[i, q, char2id[y_q]] = 1
+            except Exception as e:
+                print(e)
         yield xs, ys
 
 
 out_size = 32
 out_depth = 16
-chars = '0123456789abcdef'
+chars = u'0123456789abcdef'
 char2id = dict((c, i) for i, c in enumerate(chars))
 id2char = dict((i, c) for i, c in enumerate(chars))
 
 if __name__ == '__main__':
-    in_steps = 10
-    in_depth = 10
-    batch_size = 3
+    in_steps = 1
+    in_depth = in_steps
+    batch_size = 1
 
     m_generator = md5_generator(length=in_steps, depth=in_depth, batch_size=batch_size)
-    generator = data_generator()
+    generator = data_generator(in_steps, in_depth, batch_size)
     for i, (x, y) in enumerate(m_generator):
         print(x, ' => ', y)
         if i > 1:
             break
-    for i, (x, y) in enumerate(generator):
-        print(x, ' => ', y)
-        if i > 1:
-            break
+    # for i, (x, y) in enumerate(generator):
+    #     print(x, ' => ', y)
+    #     if i > 1:
+    #         break
