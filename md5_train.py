@@ -47,6 +47,9 @@ if __name__ == '__main__':
     if os.path.exists(path_weights):
         model.load_weights(path_weights)
         print('Load weights successfully.')
+    dir_weights = os.path.dirname(path_weights)
+    if not os.path.exists(dir_weights):
+        os.makedirs(dir_weights)
     model.fit_generator(generator, steps_per_epoch=200, epochs=1000, verbose=1,
                         callbacks=[ModelCheckpoint(path_weights), TensorBoard()])
     model.save_weights(path_weights)
