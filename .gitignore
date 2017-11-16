@@ -2,3 +2,4 @@
 /params/
 .idea
 *.pyc
+*.h5

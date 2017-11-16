@@ -1,16 +1,19 @@
 import numpy as np
-
-print np.random.multinomial(1000, [1. / 6] * 6, 1)
-
-a = np.array([1, 2])
-b = np.log(a) / 1.2
-print b
-print np.exp(b)
-
-a = [1, 2]
-b = [2, 3]
-a.extend(b)
-print a
-print b[:-1]
+import hashlib
 
 
+def generator(length=10, depth=10):
+    md5 = hashlib.md5()
+    while True:
+        random_data = [str(c) for c in np.random.randint(0, depth, length).tolist()]
+        x = ' '.join(random_data)
+        md5.update(''.join(random_data))
+        y = ' '.join(md5.hexdigest())
+        yield x, y
+
+
+g = generator(length=3)
+for i, (x, y) in enumerate(g):
+    print x, ' => ', y
+    if i > 100:
+        break
