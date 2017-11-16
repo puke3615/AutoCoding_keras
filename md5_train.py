@@ -37,15 +37,16 @@ if __name__ == '__main__':
     in_steps = 10
     in_depth = 10
     batch_size = 32
+    lr = 1e-2
 
     generator = md5_data.data_generator()
 
     model = build_model(in_steps, in_depth, md5_data.out_size, md5_data.out_depth, n_hidden)
-    model.compile(RMSprop(1e-2), 'categorical_crossentropy', metrics=['accuracy'])
+    model.compile(Nadam(lr), 'categorical_crossentropy', metrics=['accuracy'])
 
     if os.path.exists(path_weights):
         model.load_weights(path_weights)
         print('Load weights successfully.')
     model.fit_generator(generator, steps_per_epoch=100, epochs=500, verbose=1,
-                        class_weight=[ModelCheckpoint(path_weights)])
+                        callbacks=[ModelCheckpoint(path_weights)])
     model.save_weights(path_weights)
