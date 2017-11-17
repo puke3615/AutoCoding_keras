@@ -16,14 +16,17 @@ def build_model(input_maxlen, in_depth, out_size, out_depth, hidden_size):
     # Encoder(第一个 LSTM)
     # model.add(LSTM(input_dim=input_size, output_dim=hidden_size, return_sequences=False))
     model.add(LSTM(hidden_size, input_shape=(input_maxlen, in_depth)))
+    model.add(BatchNormalization())
 
     model.add(Dense(hidden_size, activation="relu"))
 
     # 使用 "RepeatVector" 将 Encoder 的输出(最后一个 time step)复制 N 份作为 Decoder 的 N 次输入
     model.add(RepeatVector(out_size))
+    model.add(BatchNormalization())
 
     # Decoder(第二个 LSTM)
     model.add(LSTM(hidden_size, return_sequences=True))
+    model.add(BatchNormalization())
 
     # TimeDistributed 是为了保证 Dense 和 Decoder 之间的一致
     model.add(TimeDistributed(Dense(out_depth, activation="softmax")))
@@ -32,12 +35,14 @@ def build_model(input_maxlen, in_depth, out_size, out_depth, hidden_size):
 
 
 if __name__ == '__main__':
-    n_hidden = 128
+    n_hidden = 256
     path_weights = './params/weights.h5'
-    in_steps = 1
+    in_steps = 2
     in_depth = in_steps
-    batch_size = 1
-    lr = 1e-2
+    batch_size = 32
+    lr = 1e-4
+    epochs = 1000
+    steps_per_epoch = 200
 
     generator = md5_data.data_generator(in_steps, in_depth, batch_size)
 
@@ -50,6 +55,6 @@ if __name__ == '__main__':
     dir_weights = os.path.dirname(path_weights)
     if not os.path.exists(dir_weights):
         os.makedirs(dir_weights)
-    model.fit_generator(generator, steps_per_epoch=200, epochs=1000, verbose=1,
+    model.fit_generator(generator, steps_per_epoch=steps_per_epoch, epochs=epochs, verbose=1,
                         callbacks=[ModelCheckpoint(path_weights), TensorBoard()])
     model.save_weights(path_weights)
