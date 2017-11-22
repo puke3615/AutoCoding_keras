@@ -3,7 +3,9 @@ from keras.preprocessing.sequence import pad_sequences
 from keras.models import Sequential
 from keras.optimizers import *
 from keras.callbacks import *
+from keras.metrics import *
 from keras.layers import *
+from callback import *
 import numpy as np
 import md5_data
 import re
@@ -33,6 +35,8 @@ def build_model(input_maxlen, in_depth, out_size, out_depth, hidden_size):
 
     return model
 
+def time_print(y_true, y_pred):
+    return time.time()
 
 if __name__ == '__main__':
     n_hidden = 256
@@ -55,6 +59,10 @@ if __name__ == '__main__':
     dir_weights = os.path.dirname(path_weights)
     if not os.path.exists(dir_weights):
         os.makedirs(dir_weights)
-    model.fit_generator(generator, steps_per_epoch=steps_per_epoch, epochs=epochs, verbose=1,
-                        callbacks=[ModelCheckpoint(path_weights), TensorBoard()])
+    model.fit_generator(generator, steps_per_epoch=steps_per_epoch, epochs=epochs, verbose=0,
+                        callbacks=[
+                            ModelCheckpoint(path_weights),
+                            TensorBoard(),
+                            ProgbarLogger(count_mode='steps')
+                        ])
     model.save_weights(path_weights)
